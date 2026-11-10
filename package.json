@@ -1,0 +1,44 @@
+{
+  "name": "clearplay",
+  "productName": "澄映播放器",
+  "version": "0.1.5",
+  "description": "百度网盘、夸克网盘与本地视频的 Windows 高清倍速播放器",
+  "main": "src/main.cjs",
+  "author": "Clearplay",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test tests/*.test.cjs",
+    "test:desktop": "node scripts/test-desktop.cjs",
+    "test:login": "node scripts/test-login.cjs",
+    "sample": "node scripts/create-sample.cjs",
+    "build": "electron-builder --win portable --x64",
+    "build:dir": "electron-builder --win dir --x64"
+  },
+  "dependencies": {
+    "hls.js": "1.7.4"
+  },
+  "devDependencies": {
+    "electron": "45.2.3",
+    "electron-builder": "26.18.0",
+    "playwright": "1.65.0"
+  },
+  "build": {
+    "appId": "local.clearplay.player",
+    "artifactName": "Clearplay-${version}-portable.${ext}",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "portable",
+      "signAndEditExecutable": false
+    },
+    "portable": {
+      "artifactName": "Clearplay-${version}-portable.exe"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+node_modules/
+release/
+test-results/
+*.log
+.env*
+android/.gradle/
+android/**/build/
+android/local.properties
+*.jks
+*.keystore

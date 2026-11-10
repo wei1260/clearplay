@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src clearplay: blob:; connect-src clearplay: blob:; object-src 'none'; base-uri 'none'; frame-src 'none'; form-action 'none'">
+  <title>澄映 · Clearplay</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="hls.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18a5 5 0 0 1-1-9.9A6.5 6.5 0 0 1 18.5 9 4.5 4.5 0 0 1 18 18Z"/></symbol>
+    <symbol id="i-quark" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5M7 11a4 4 0 0 1 4-4"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v9H3Z"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7Z"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="m5 5 11 7-11 7ZM19 5v14"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m9 4-5 4 5 4M5 8h9a7 7 0 1 1-7 9"/><path d="M11 13v5m3-5v5"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24"><path d="m11 4-6 5H2v6h3l6 5ZM15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
+    <symbol id="i-mute" viewBox="0 0 24 24"><path d="m11 4-6 5H2v6h3l6 5ZM16 9l6 6m0-6-6 6"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m8 0h5v-5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 8a9 9 0 1 0 0 8M20 3v5h-5"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="m10 14 4-4m-6 7-1 1a4 4 0 0 1-6-6l5-5a4 4 0 0 1 6 0m0 10a4 4 0 0 0 6 0l5-5a4 4 0 0 0-6-6l-1 1" transform="translate(1 0) scale(.91)"/></symbol>
+    <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 9h4m-4 6h4m10-6h4m-4 6h4"/></symbol>
+    <symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M5 9h1m3 0h1m3 0h1m3 0h1M5 12h1m3 0h1m3 0h1m3 0h1M7 16h10"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M12 17v4m-5 0h10"/></symbol>
+  </defs></svg>
+
+  <div class="titlebar"><span>澄映 <span class="titlebar-separator">/</span> CLEARPLAY</span><span class="titlebar-note">给影像一点自己的时间</span></div>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark"><svg viewBox="0 0 36 36"><path d="M28 8a14 14 0 1 0 0 20"/><path d="m16 12 10 6-10 6Z"/></svg></div><div><strong>澄映</strong><span>CLEARPLAY</span></div></div>
+      <div class="nav-label">我的放映室</div>
+      <nav aria-label="视频来源">
+        <button class="nav-item active" data-view="baidu"><svg class="icon"><use href="#i-cloud"/></svg><span>百度网盘</span><i class="nav-dot" id="baidu-dot"></i></button>
+        <button class="nav-item" data-view="quark"><svg class="icon"><use href="#i-quark"/></svg><span>夸克网盘</span><i class="nav-dot" id="quark-dot"></i></button>
+        <div class="nav-divider"></div>
+        <button class="nav-item" data-view="recent"><svg class="icon"><use href="#i-clock"/></svg><span>最近播放</span></button>
+        <button class="nav-item" data-view="local"><svg class="icon"><use href="#i-folder"/></svg><span>本地视频</span></button>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-note"><span class="tiny-eyebrow">YOUR OWN CINEMA</span><p>云端收藏<br>此刻放映。</p><div class="note-line"></div><span>原画质 · 自由倍速 · 安心续播</span></div>
+      <button class="sidebar-connect" id="manage-connections"><span class="connection-icon"><svg class="icon"><use href="#i-link"/></svg></span><span><strong id="connection-title">连接你的网盘</strong><small id="connection-subtitle">开启私人放映室</small></span><svg class="icon small"><use href="#i-chevron"/></svg></button>
+      <div class="sidebar-version">DESKTOP <span id="app-version">v0.1.1</span></div>
+    </aside>
+
+    <main>
+      <header class="page-header"><div><div class="eyebrow">THE SCREEN IS YOURS</div><h1>你的私人放映室<span>.</span></h1><p>好影像，按你的节奏播放。</p></div><div class="header-actions"><button class="button secondary" id="open-local"><svg class="icon"><use href="#i-folder"/></svg>打开本地视频</button><button class="button primary" id="connect-drive"><svg class="icon"><use href="#i-plus"/></svg><span>连接百度网盘</span></button></div></header>
+
+      <section class="screen-layout" aria-label="视频播放器">
+        <div class="screen-column">
+          <div class="player-card" id="player-card">
+            <div class="stage" id="stage">
+              <video id="video" preload="metadata" playsinline></video>
+              <div class="welcome" id="welcome">
+                <svg class="landscape" viewBox="0 0 1100 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><radialGradient id="sky"><stop stop-color="#344c51"/><stop offset="1" stop-color="#131e24"/></radialGradient><linearGradient id="ridge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#647774"/><stop offset="1" stop-color="#273b40"/></linearGradient><linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#101419" stop-opacity="0"/><stop offset="1" stop-color="#101419"/></linearGradient></defs><rect width="1100" height="620" fill="url(#sky)"/><circle cx="802" cy="183" r="72" fill="#e4d2af" opacity=".77"/><circle cx="802" cy="183" r="88" fill="none" stroke="#d7c7a5" opacity=".13"/><path d="m0 435 116-110 88 37 130-181 127 201 104-69 143 72 126-158 145 167 121-87v313H0Z" fill="#36494b"/><path d="m0 484 189-190 104 68 83-118 208 251 152-112 131 48 96-144 137 123v210H0Z" fill="url(#ridge)"/><g fill="none" stroke="#b2c1af" stroke-width="1" opacity=".15"><path d="m10 509 185-189 98 68 83-118 208 251 152-112 131 48 96-144 137 123"/><path d="m10 534 185-189 98 68 83-118 208 251 152-112 131 48 96-144 137 123"/><path d="m10 559 185-189 98 68 83-118 208 251 152-112 131 48 96-144 137 123"/><path d="m10 584 185-189 98 68 83-118 208 251 152-112 131 48 96-144 137 123"/></g><rect width="1100" height="620" fill="url(#fade)"/></svg>
+                <div class="stage-topline"><span><i></i> READY WHEN YOU ARE</span><span>CLEARPLAY ORIGINAL</span></div>
+                <div class="welcome-content"><div class="welcome-symbol"><svg class="icon"><use href="#i-play"/></svg></div><span class="tiny-eyebrow">LESS DISTRACTION. MORE CINEMA.</span><h2>此刻，专注好画面。</h2><p>连接网盘，或打开本地视频<br>让每一帧，都按你的节奏。</p><div class="welcome-actions"><button class="button primary" id="welcome-connect">连接网盘<svg class="icon small"><use href="#i-chevron"/></svg></button><button class="button text-button" id="play-sample"><svg class="icon small"><use href="#i-play"/></svg>播放 1080P 示例</button></div></div>
+                <div class="stage-bottomline"><span>01 <b>/</b> PRIVATE SCREENING</span><span>让喜欢的内容，回到画面本身。</span></div>
+              </div>
+              <div class="player-message hidden" id="player-message" aria-live="polite"><div class="spinner" id="player-spinner"></div><strong id="player-message-title">正在打开视频</strong><p id="player-message-detail"></p><button class="button secondary hidden" id="retry-play">重新获取播放资源</button></div>
+              <div class="video-tag hidden" id="video-tag">原画</div>
+            </div>
+            <div class="transport">
+              <div class="seek-row"><input type="range" id="seek" min="0" max="1000" value="0" aria-label="播放进度" disabled></div>
+              <div class="control-row"><div class="control-group"><button class="icon-button play-button" id="toggle-play" aria-label="播放" title="播放 / 暂停（空格）" disabled><svg class="icon"><use href="#i-play"/></svg></button><button class="icon-button" id="skip-back" aria-label="后退十秒" title="后退 10 秒（←）" disabled><svg class="icon"><use href="#i-back"/></svg></button><button class="icon-button" id="next-video" aria-label="下一个视频" title="播放下一个视频" disabled><svg class="icon"><use href="#i-next"/></svg></button><span class="time"><span id="current-time">00:00</span><b>/</b><span id="duration">00:00</span></span></div><div class="control-group right-controls"><button class="icon-button" id="toggle-mute" aria-label="静音" title="静音（M）"><svg class="icon"><use href="#i-volume"/></svg></button><input type="range" id="volume" min="0" max="1" step="0.01" value="0.8" aria-label="音量"><span class="control-divider"></span><label class="select-wrap"><select id="speed" aria-label="播放倍速"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1.0×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="1.75">1.75×</option><option value="2">2.0×</option><option value="2.5">2.5×</option><option value="3">3.0×</option><option value="4">4.0×</option></select></label><label class="select-wrap quality-wrap"><select id="quality" aria-label="视频清晰度" disabled><option>原画</option></select></label><button class="icon-button" id="fullscreen" aria-label="全屏" title="全屏（F）"><svg class="icon"><use href="#i-expand"/></svg></button></div></div>
+            </div>
+          </div>
+          <div class="now-playing"><div><span class="playing-indicator" id="playing-indicator"></span><strong id="now-title">等待你的第一部影片</strong></div><span id="now-detail">原画播放 · 最高 4× 倍速</span></div>
+        </div>
+
+        <aside class="playlist"><div class="playlist-heading"><h2>播放列表 <span id="queue-count">00</span></h2><span class="playlist-label">UP NEXT</span></div><div id="queue" class="queue"><div class="queue-empty"><div class="queue-art"><svg class="icon"><use href="#i-film"/></svg><span></span><span></span></div><strong>下一帧，等你选择</strong><p>打开网盘中的视频<br>同目录影片将在这里排队</p></div></div><div class="autoplay-row"><span>自动播放下一集</span><label class="switch"><input type="checkbox" id="autoplay" aria-label="自动播放下一集"><span></span></label></div><div class="playlist-tip"><svg class="icon small"><use href="#i-check"/></svg>自动记住进度，下次接着看</div></aside>
+      </section>
+
+      <section class="library" aria-label="视频文件列表"><div class="library-heading"><div class="library-heading-left"><h2 id="library-title">云端片库</h2><span id="source-badge" class="source-badge">百度网盘</span><span class="connection-state" id="source-state">未连接</span></div><div class="library-tools"><label class="search-box"><svg class="icon small"><use href="#i-search"/></svg><input id="search" placeholder="搜索当前目录视频" aria-label="搜索视频"></label><button class="icon-button" id="refresh-list" aria-label="刷新目录" title="刷新目录"><svg class="icon small"><use href="#i-refresh"/></svg></button></div></div><div class="breadcrumbs" id="breadcrumbs"></div><div id="file-list" class="file-list"></div><button id="load-more" class="load-more hidden">加载更多</button></section>
+      <footer class="app-footer"><span><i></i>本地运行 · 授权信息仅保存在本机</span><button id="show-shortcuts"><svg class="icon small"><use href="#i-keyboard"/></svg>键盘快捷键</button></footer>
+    </main>
+  </div>
+
+  <dialog id="connect-dialog"><div class="dialog-header"><div><span class="eyebrow">CONNECTED, PRIVATELY</span><h2>把云端，带到眼前。</h2></div><button class="icon-button" id="close-connect" aria-label="关闭连接窗口"><svg class="icon"><use href="#i-close"/></svg></button></div><div class="provider-tabs" role="tablist" aria-label="连接的网盘"><button role="tab" id="tab-baidu" data-provider="baidu" aria-selected="true"><svg class="icon"><use href="#i-cloud"/></svg>百度网盘</button><button role="tab" id="tab-quark" data-provider="quark" aria-selected="false"><svg class="icon"><use href="#i-quark"/></svg>夸克网盘</button></div>
+    <div id="connected-panel" class="connected-panel hidden"><span class="connected-check"><svg class="icon"><use href="#i-check"/></svg></span><h3 id="connected-name">网盘已连接</h3><p>你可以浏览目录，选择视频开始播放。</p><button class="button primary full-width hidden" id="switch-baidu-web">改用官网直接登录，优先转码播放</button><button class="button secondary" id="disconnect">断开此网盘连接</button></div>
+    <div id="baidu-panel"><p class="dialog-description">直接在百度官网扫码或登录，无需填写 AppKey / SecretKey。</p><ol class="login-steps"><li><span>01</span><div><strong>打开百度网盘官网并登录</strong><p>使用官网提供的扫码或账号登录方式。</p></div></li><li><span>02</span><div><strong>返回这里，点击“完成登录”</strong><p>验证网盘目录后，即可选择视频播放。</p></div></li></ol><button class="button secondary full-width" id="login-baidu">打开百度官网登录窗口 ↗</button><button class="button primary full-width" id="finish-baidu">完成登录，连接百度<svg class="icon small"><use href="#i-chevron"/></svg></button><details id="baidu-advanced"><summary>高级：应用密钥授权</summary><p class="form-help">此方式使用百度开放平台 OAuth，需要你自己的开发者应用。申请接入并完成认证 → 控制台创建应用 → 应用详情复制 AppKey 和 SecretKey。<button type="button" id="open-platform">打开百度开放平台 ↗</button></p><form id="baidu-form"><label class="form-label" for="app-key">应用 AppKey</label><input class="text-input" id="app-key" autocomplete="off" spellcheck="false" required placeholder="填写应用详情中的 AppKey"><label class="form-label" for="secret-key">应用 SecretKey</label><input class="text-input" id="secret-key" type="password" autocomplete="off" required placeholder="仅在本机加密保存"><div class="form-help">密钥属于开发者应用，并非百度账号密码。<button type="button" id="open-docs">查看授权说明 ↗</button></div><button class="button primary full-width" id="begin-auth" type="submit">生成官方授权码<svg class="icon small"><use href="#i-chevron"/></svg></button></form><div class="auth-code-panel hidden" id="auth-code-panel"><span class="tiny-eyebrow">在百度授权页面输入此码</span><strong id="auth-code"></strong><button class="button primary full-width" id="open-auth">打开百度官方授权页面 ↗</button><p><span class="inline-spinner"></span><span id="auth-status">等待授权完成…</span></p></div></details></div>
+    <div id="quark-panel" class="hidden"><p class="dialog-description">在独立窗口登录夸克官网，完成后回到这里连接。</p><ol class="login-steps"><li><span>01</span><div><strong>打开夸克登录窗口</strong><p>支持官网提供的扫码或手机号登录方式。</p></div></li><li><span>02</span><div><strong>登录成功后，点击“完成登录”</strong><p>播放器验证连接后，即可读取你的视频目录。</p></div></li></ol><button class="button secondary full-width" id="login-quark">打开夸克官网登录窗口 ↗</button><button class="button primary full-width" id="finish-quark">完成登录，连接夸克<svg class="icon small"><use href="#i-chevron"/></svg></button><p class="form-help">使用本机独立登录会话；会话失效后可重新登录。</p></div>
+    <div class="dialog-error hidden" id="connect-error" role="alert"></div><div class="dialog-footer"><svg class="icon small"><use href="#i-monitor"/></svg>授权留在本机，播放回到你的屏幕。</div>
+  </dialog>
+
+  <dialog id="shortcuts-dialog"><div class="dialog-header"><div><span class="eyebrow">AT YOUR FINGERTIPS</span><h2>按下，就刚刚好。</h2></div><button class="icon-button" id="close-shortcuts" aria-label="关闭快捷键窗口"><svg class="icon"><use href="#i-close"/></svg></button></div><div class="shortcuts"><div><span>播放 / 暂停</span><kbd>Space</kbd></div><div><span>后退 / 前进 10 秒</span><span><kbd>←</kbd> <kbd>→</kbd></span></div><div><span>音量增加 / 减少</span><span><kbd>↑</kbd> <kbd>↓</kbd></span></div><div><span>静音</span><kbd>M</kbd></div><div><span>进入 / 退出全屏</span><kbd>F</kbd></div></div></dialog>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+</body>
+</html>

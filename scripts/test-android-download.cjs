@@ -1,0 +1,11 @@
+const cp=require('node:child_process'),fs=require('node:fs'),path=require('node:path');
+const provider=process.argv.find(x=>x.startsWith('--provider='))?.split('=')[1]||'baidu';
+if(!['baidu','quark'].includes(provider))throw new Error('Unsupported provider');
+const adb=path.resolve(__dirname,'../../android-build-tools/sdk/platform-tools/adb.exe');
+const args=['-d','shell','am','instrument','-w','-r','-e','class','local.clearplay.android.DownloadButtonTest','-e','clearplayAccountCheck','true','-e','clearplayProvider',provider,'local.clearplay.player.android.test/androidx.test.runner.AndroidJUnitRunner'];
+let output='',opened=false;
+const child=cp.spawn(adb,args,{windowsHide:true,stdio:['ignore','pipe','pipe']});
+const timer=setTimeout(()=>{cp.execFileSync(adb,['-d','shell','am','force-stop','local.clearplay.player.android'],{windowsHide:true});child.kill();},360000);
+child.stdout.on('data',data=>{const text=data.toString();output+=text;process.stdout.write(text);if(!opened&&output.includes('INSTRUMENTATION_STATUS_CODE: 1')){opened=true;cp.execFile(adb,['-d','shell','am','start','-W','-n','local.clearplay.player.android/local.clearplay.android.MainActivity'],{windowsHide:true},()=>{});}});
+child.stderr.on('data',data=>process.stderr.write(data));
+child.on('close',code=>{clearTimeout(timer);const folder=path.resolve(__dirname,'../test-results/android');fs.mkdirSync(folder,{recursive:true});const file=path.join(folder,`download-button-${provider}-0.1.10.txt`);fs.writeFileSync(file,output);console.log(`Report: ${file}`);process.exitCode=code||(!output.includes('OK (1 test)')?1:0);});

@@ -1,0 +1,52 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'local.clearplay.android'
+    compileSdk 35
+    testBuildType providers.gradleProperty('deviceTestBuildType').getOrElse('debug')
+    defaultConfig {
+        applicationId 'local.clearplay.player.android'
+        minSdk 26
+        targetSdk 35
+        versionCode 8
+        versionName '0.1.10-android'
+        resValue 'string', 'app_name', '澄映播放器'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+    }
+    signingConfigs {
+        release {
+            if (System.getenv('CLEARPLAY_KEYSTORE')) {
+                storeFile file(System.getenv('CLEARPLAY_KEYSTORE'))
+                storePassword System.getenv('CLEARPLAY_STORE_PASSWORD')
+                keyAlias 'clearplay'
+                keyPassword System.getenv('CLEARPLAY_STORE_PASSWORD')
+            }
+        }
+    }
+    buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-test'
+            resValue 'string', 'app_name', '澄映播放器（测试）'
+        }
+        release { signingConfig signingConfigs.release }
+    }
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.annotation:annotation-experimental:1.4.1'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
+    implementation 'androidx.media3:media3-exoplayer:1.8.0'
+    implementation 'androidx.media3:media3-exoplayer-hls:1.8.0'
+    implementation 'androidx.media3:media3-ui:1.8.0'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.json:json:20250517'
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test:core:1.6.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+}
